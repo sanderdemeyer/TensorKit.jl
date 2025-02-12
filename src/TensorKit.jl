@@ -130,6 +130,8 @@ using Random: Random, rand!, randn!
 
 using PackageExtensionCompat
 
+using GenericLinearAlgebra: svd as generic_svd
+
 # Auxiliary files
 #-----------------
 include("auxiliary/auxiliary.jl")

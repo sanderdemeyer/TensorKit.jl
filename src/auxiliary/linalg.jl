@@ -66,6 +66,8 @@ using LinearAlgebra: BlasFloat, BlasReal, BlasComplex, checksquare
 using ..TensorKit: OrthogonalFactorizationAlgorithm,
                    QL, QLpos, QR, QRpos, LQ, LQpos, RQ, RQpos, SVD, SDD, Polar
 
+using GenericLinearAlgebra: svd as generic_svd
+
 # only defined in >v1.7
 @static if VERSION < v"1.7-"
     _rf_findmax((fm, im), (fx, ix)) = isless(fm, fx) ? (fx, ix) : (fm, im)
@@ -276,6 +278,11 @@ function svd!(A::StridedMatrix{T}, alg::Union{SVD,SDD}) where {T<:BlasFloat}
     TT = Tuple{Matrix{T},Vector{real(T)},Matrix{T}}
     U, S, V = alg isa SVD ? LAPACK.gesvd!('S', 'S', A)::TT : LAPACK.gesdd!('S', A)::TT
     return U, S, V
+end
+
+function svd!(A::StridedMatrix{T}, alg::Union{SVD,SDD}) where {T<:Complex{BigFloat}}
+    U, S, V = generic_svd(A)
+    return U, S, V' # conjugation to account for difference in convention
 end
 
 function eig!(A::StridedMatrix{T}; permute::Bool=true, scale::Bool=true) where {T<:BlasReal}
