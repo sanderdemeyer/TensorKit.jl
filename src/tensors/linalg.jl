@@ -373,11 +373,21 @@ function Base.:(/)(t1::AbstractTensorMap, t2::AbstractTensorMap)
 end
 
 # TensorMap exponentation:
-function exp!(t::TensorMap)
+function exp!(t::TensorMap{T}) where {T<:LinearAlgebra.BlasFloat}
     domain(t) == codomain(t) ||
         error("Exponential of a tensor only exist when domain == codomain.")
     for (c, b) in blocks(t)
         copy!(b, LinearAlgebra.exp!(b))
+    end
+    return t
+end
+
+function exp!(t::TensorMap{T}) where {T<:Union{BigFloat,Complex{BigFloat}}}
+    domain(t) == codomain(t) ||
+        error("Exponential of a tensor only exist when domain == codomain.")
+    for (c, b) in blocks(t)
+        vals, vecs = generic_eigen(b)
+        copy!(b, vecs * LinearAlgebra.diagm(exp.(vals)) * vecs')
     end
     return t
 end
