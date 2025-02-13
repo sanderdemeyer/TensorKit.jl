@@ -280,7 +280,7 @@ function svd!(A::StridedMatrix{T}, alg::Union{SVD,SDD}) where {T<:BlasFloat}
     return U, S, V
 end
 
-function svd!(A::StridedMatrix{T}, alg::Union{SVD,SDD}) where {T<:Complex{BigFloat}}
+function svd!(A::StridedMatrix{T}, alg::Union{SVD,SDD}) where {T<:Union{BigFloat,Complex{BigFloat}}}
     U, S, V = generic_svd(A)
     return U, S, V' # conjugation to account for difference in convention
 end
