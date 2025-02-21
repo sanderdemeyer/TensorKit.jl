@@ -67,6 +67,7 @@ using ..TensorKit: OrthogonalFactorizationAlgorithm,
                    QL, QLpos, QR, QRpos, LQ, LQpos, RQ, RQpos, SVD, SDD, Polar
 
 using GenericLinearAlgebra: svd as generic_svd
+using GenericLinearAlgebra: eigen as generic_eigen
 
 # only defined in >v1.7
 @static if VERSION < v"1.7-"
@@ -324,6 +325,12 @@ function eig!(A::StridedMatrix{T}; permute::Bool=true,
         v .*= s
     end
     return D, V
+end
+
+function eig!(A::StridedMatrix{T}; permute::Bool=true,
+              scale::Bool=true) where {T<:Complex{BigFloat}}
+    eigval, eigvec = generic_eigen(A; sortby = λ -> -abs(λ))
+    return eigval, eigvec
 end
 
 function eigh!(A::StridedMatrix{T}) where {T<:BlasFloat}
