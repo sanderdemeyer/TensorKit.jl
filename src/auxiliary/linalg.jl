@@ -68,6 +68,7 @@ using ..TensorKit: OrthogonalFactorizationAlgorithm,
 
 using GenericLinearAlgebra: svd as generic_svd
 using GenericLinearAlgebra: eigen as generic_eigen
+using GenericLinearAlgebra: qr as generic_qr
 
 # only defined in >v1.7
 @static if VERSION < v"1.7-"
@@ -115,6 +116,56 @@ function leftorth!(A::StridedMatrix{<:BlasFloat}, alg::Union{QR,QRpos}, atol::Re
         end
     end
     return Q, R
+end
+
+function leftorth!(A::StridedMatrix{<:Union{BigFloat,Complex{BigFloat}}}, alg::Union{QR,QRpos}, atol::Real)
+    iszero(atol) || throw(ArgumentError("nonzero atol not supported by $alg"))
+    m, n = size(A)
+    k = min(m, n)
+
+    Q, R = generic_qr(A)
+    Q = convert(Array, Q)
+
+    if isa(alg, QRpos)
+        @inbounds for j in 1:k
+            s = safesign(R[j, j])
+            @simd for i in 1:m
+                Q[i, j] *= s
+            end
+        end
+        @inbounds for j in size(R, 2):-1:1
+            for i in 1:min(k, j)
+                R[i, j] = R[i, j] * conj(safesign(R[i, i]))
+            end
+        end
+    end
+
+    return Q, R
+end
+
+function rightorth!(A::StridedMatrix{<:Union{BigFloat,Complex{BigFloat}}}, alg::Union{LQ,LQpos}, atol::Real)
+    iszero(atol) || throw(ArgumentError("nonzero atol not supported by $alg"))
+    m, n = size(A)
+    k = min(m, n)
+
+    Q, R = generic_qr(A')
+    Q = convert(Array, Q)
+
+    if isa(alg, LQpos)
+        @inbounds for j in 1:k
+            s = safesign(R[j, j])
+            @simd for i in 1:m
+                Q[i, j] *= s
+            end
+        end
+        @inbounds for j in size(R, 2):-1:1
+            for i in 1:min(k, j)
+                R[i, j] = R[i, j] * conj(safesign(R[i, i]))
+            end
+        end
+    end
+
+    return R', Q'
 end
 
 function leftorth!(A::StridedMatrix{<:BlasFloat}, alg::Union{QL,QLpos}, atol::Real)
