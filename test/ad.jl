@@ -196,6 +196,9 @@ Vlist = ((ℂ^2, (ℂ^3)', ℂ^3, ℂ^2, (ℂ^2)'),
             test_rrule(DiagonalTensorMap, D.data, D.domain)
             test_rrule(Base.getproperty, D, :data)
             test_rrule(Base.getproperty, D1, :data)
+
+            test_rrule(DiagonalTensorMap, rand!(T1))
+            test_rrule(DiagonalTensorMap, randn!(T))
         end
     end
 
@@ -231,6 +234,7 @@ Vlist = ((ℂ^2, (ℂ^3)', ℂ^3, ℂ^2, (ℂ^2)'),
             E = randn(T, ⊗(V[1:i]...) ← ⊗(V[1:i]...))
             test_rrule(LinearAlgebra.tr, E)
             test_rrule(exp, E; check_inferred=false)
+            test_rrule(inv, E)
         end
 
         A = randn(T, V[1] ⊗ V[2] ← V[3] ⊗ V[4] ⊗ V[5])

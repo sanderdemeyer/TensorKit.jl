@@ -1,54 +1,3 @@
-Vtr = (ℂ^3,
-       (ℂ^4)',
-       ℂ^5,
-       ℂ^6,
-       (ℂ^7)')
-Vℤ₂ = (ℂ[Z2Irrep](0 => 1, 1 => 1),
-       ℂ[Z2Irrep](0 => 1, 1 => 2)',
-       ℂ[Z2Irrep](0 => 3, 1 => 2)',
-       ℂ[Z2Irrep](0 => 2, 1 => 3),
-       ℂ[Z2Irrep](0 => 2, 1 => 5))
-Vfℤ₂ = (ℂ[FermionParity](0 => 1, 1 => 1),
-        ℂ[FermionParity](0 => 1, 1 => 2)',
-        ℂ[FermionParity](0 => 3, 1 => 2)',
-        ℂ[FermionParity](0 => 2, 1 => 3),
-        ℂ[FermionParity](0 => 2, 1 => 5))
-Vℤ₃ = (ℂ[Z3Irrep](0 => 1, 1 => 2, 2 => 2),
-       ℂ[Z3Irrep](0 => 3, 1 => 1, 2 => 1),
-       ℂ[Z3Irrep](0 => 2, 1 => 2, 2 => 1)',
-       ℂ[Z3Irrep](0 => 1, 1 => 2, 2 => 3),
-       ℂ[Z3Irrep](0 => 1, 1 => 3, 2 => 3)')
-VU₁ = (ℂ[U1Irrep](0 => 1, 1 => 2, -1 => 2),
-       ℂ[U1Irrep](0 => 3, 1 => 1, -1 => 1),
-       ℂ[U1Irrep](0 => 2, 1 => 2, -1 => 1)',
-       ℂ[U1Irrep](0 => 1, 1 => 2, -1 => 3),
-       ℂ[U1Irrep](0 => 1, 1 => 3, -1 => 3)')
-VfU₁ = (ℂ[FermionNumber](0 => 1, 1 => 2, -1 => 2),
-        ℂ[FermionNumber](0 => 3, 1 => 1, -1 => 1),
-        ℂ[FermionNumber](0 => 2, 1 => 2, -1 => 1)',
-        ℂ[FermionNumber](0 => 1, 1 => 2, -1 => 3),
-        ℂ[FermionNumber](0 => 1, 1 => 3, -1 => 3)')
-VCU₁ = (ℂ[CU1Irrep]((0, 0) => 1, (0, 1) => 2, 1 => 1),
-        ℂ[CU1Irrep]((0, 0) => 3, (0, 1) => 0, 1 => 1),
-        ℂ[CU1Irrep]((0, 0) => 1, (0, 1) => 0, 1 => 2)',
-        ℂ[CU1Irrep]((0, 0) => 2, (0, 1) => 2, 1 => 1),
-        ℂ[CU1Irrep]((0, 0) => 2, (0, 1) => 1, 1 => 2)')
-VSU₂ = (ℂ[SU2Irrep](0 => 3, 1 // 2 => 1),
-        ℂ[SU2Irrep](0 => 2, 1 => 1),
-        ℂ[SU2Irrep](1 // 2 => 1, 1 => 1)',
-        ℂ[SU2Irrep](0 => 2, 1 // 2 => 2),
-        ℂ[SU2Irrep](0 => 1, 1 // 2 => 1, 3 // 2 => 1)')
-VfSU₂ = (ℂ[FermionSpin](0 => 3, 1 // 2 => 1),
-         ℂ[FermionSpin](0 => 2, 1 => 1),
-         ℂ[FermionSpin](1 // 2 => 1, 1 => 1)',
-         ℂ[FermionSpin](0 => 2, 1 // 2 => 2),
-         ℂ[FermionSpin](0 => 1, 1 // 2 => 1, 3 // 2 => 1)')
-# VSU₃ = (ℂ[SU3Irrep]((0, 0, 0) => 3, (1, 0, 0) => 1),
-#     ℂ[SU3Irrep]((0, 0, 0) => 3, (2, 0, 0) => 1)',
-#     ℂ[SU3Irrep]((1, 1, 0) => 1, (2, 1, 0) => 1),
-#     ℂ[SU3Irrep]((1, 0, 0) => 1, (2, 0, 0) => 1),
-#     ℂ[SU3Irrep]((0, 0, 0) => 1, (1, 0, 0) => 1, (1, 1, 0) => 1)')
-
 for V in (Vtr, Vℤ₂, Vfℤ₂, Vℤ₃, VU₁, VfU₁, VCU₁, VSU₂, VfSU₂)#, VSU₃)
     V1, V2, V3, V4, V5 = V
     @assert V3 * V4 * V2 ≿ V1' * V5' # necessary for leftorth tests
@@ -190,7 +139,7 @@ for V in spacelist
                 @test w * w' == (w * w')^2
             end
         end
-        @timedtestset "Trivial spaces" begin
+        @timedtestset "Trivial space insertion and removal" begin
             W = V1 ⊗ V2 ⊗ V3 ← V4 ⊗ V5
             for T in (Float32, ComplexF64)
                 t = @constinferred rand(T, W)
@@ -546,6 +495,23 @@ for V in spacelist
                             @test b ≈ s′[c]
                         end
                     end
+                    @testset "cond and rank" begin
+                        t2 = permute(t, ((3, 4, 2), (1, 5)))
+                        d1 = dim(codomain(t2))
+                        d2 = dim(domain(t2))
+                        @test rank(t2) == min(d1, d2)
+                        M = leftnull(t2)
+                        @test rank(M) == max(d1, d2) - min(d1, d2)
+                        t3 = unitary(T, V1 ⊗ V2, V1 ⊗ V2)
+                        @test cond(t3) ≈ one(real(T))
+                        @test rank(t3) == dim(V1 ⊗ V2)
+                        t4 = randn(T, V1 ⊗ V2, V1 ⊗ V2)
+                        t4 = (t4 + t4') / 2
+                        vals = LinearAlgebra.eigvals(t4)
+                        λmax = maximum(s -> maximum(abs, s), values(vals))
+                        λmin = minimum(s -> minimum(abs, s), values(vals))
+                        @test cond(t4) ≈ λmax / λmin
+                    end
                 end
                 @testset "empty tensor" begin
                     t = randn(T, V1 ⊗ V2, zero(V1))
@@ -586,6 +552,13 @@ for V in spacelist
                         @test U == t
                         @test dim(U) == dim(S) == dim(V)
                     end
+                    @testset "cond and rank" begin
+                        @test rank(t) == 0
+                        W2 = zero(V1) * zero(V2)
+                        t2 = rand(W2, W2)
+                        @test rank(t2) == 0
+                        @test cond(t2) == 0.0
+                    end
                 end
                 t = rand(T, V1 ⊗ V1' ⊗ V2 ⊗ V2')
                 @testset "eig and isposdef" begin
@@ -615,6 +588,7 @@ for V in spacelist
                     @test V ≈ Ṽ
                     λ = minimum(minimum(real(LinearAlgebra.diag(b)))
                                 for (c, b) in blocks(D))
+                    @test cond(Ṽ) ≈ one(real(T))
                     @test isposdef(t2) == isposdef(λ)
                     @test isposdef(t2 - λ * one(t2) + 0.1 * one(t2))
                     @test !isposdef(t2 - λ * one(t2) - 0.1 * one(t2))
@@ -693,6 +667,12 @@ for V in spacelist
                     @test tanh(@constinferred atanh(t7)) ≈ t7
                     t8 = coth(t)
                     @test coth(@constinferred acoth(t8)) ≈ t8
+                    t = randn(T, W, V1) # not square
+                    for f in
+                        (cos, sin, tan, cot, cosh, sinh, tanh, coth, atan, acot, asinh,
+                         sqrt, log, asin, acos, acosh, atanh, acoth)
+                        @test_throws SpaceMismatch f(t)
+                    end
                 end
             end
         end

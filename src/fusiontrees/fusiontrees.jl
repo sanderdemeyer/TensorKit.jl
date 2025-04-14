@@ -114,7 +114,7 @@ function Base.hash(f::FusionTree{I}, h::UInt) where {I}
     end
     return h
 end
-function Base.isequal(f₁::FusionTree{I,N}, f₂::FusionTree{I,N}) where {I<:Sector,N}
+function Base.:(==)(f₁::FusionTree{I,N}, f₂::FusionTree{I,N}) where {I<:Sector,N}
     f₁.coupled == f₂.coupled || return false
     @inbounds for i in 1:N
         f₁.uncoupled[i] == f₂.uncoupled[i] || return false
@@ -132,7 +132,7 @@ function Base.isequal(f₁::FusionTree{I,N}, f₂::FusionTree{I,N}) where {I<:Se
     end
     return true
 end
-Base.isequal(f₁::FusionTree, f₂::FusionTree) = false
+Base.:(==)(f₁::FusionTree, f₂::FusionTree) = false
 
 # Facilitate getting correct fusion tree types
 function fusiontreetype(::Type{I}, N::Int) where {I<:Sector}
@@ -235,13 +235,13 @@ include("iterator.jl")
 # _abelianinner: generate the inner indices for given outer indices in the abelian case
 _abelianinner(outer::Tuple{}) = ()
 function _abelianinner(outer::Tuple{I}) where {I<:Sector}
-    return outer[1] == one(I) ? () : throw(SectorMismatch())
+    return isone(outer[1]) ? () : throw(SectorMismatch())
 end
 function _abelianinner(outer::Tuple{I,I}) where {I<:Sector}
     return outer[1] == dual(outer[2]) ? () : throw(SectorMismatch())
 end
 function _abelianinner(outer::Tuple{I,I,I}) where {I<:Sector}
-    return first(⊗(outer...)) == one(I) ? () : throw(SectorMismatch())
+    return isone(first(⊗(outer...))) ? () : throw(SectorMismatch())
 end
 function _abelianinner(outer::Tuple{I,I,I,I,Vararg{I}}) where {I<:Sector}
     c = first(outer[1] ⊗ outer[2])

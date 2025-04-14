@@ -61,7 +61,8 @@ export blocksectors, blockdim, block, blocks
 export randisometry, randisometry!, rand, rand!, randn, randn!
 
 # special purpose constructors
-export zero, one, one!, id, isomorphism, unitary, isometry
+export zero, one, one!, id, id!, isomorphism, isomorphism!, unitary, unitary!, isometry,
+       isometry!
 
 # reexport most of VectorInterface and some more tensor algebra
 export zerovector, zerovector!, zerovector!!, scale, scale!, scale!!, add, add!, add!!
@@ -72,7 +73,7 @@ export mul!, lmul!, rmul!, adjoint!, pinv, axpy!, axpby!
 export leftorth, rightorth, leftnull, rightnull,
        leftorth!, rightorth!, leftnull!, rightnull!,
        tsvd!, tsvd, eigen, eigen!, eig, eig!, eigh, eigh!, exp, exp!,
-       isposdef, isposdef!, ishermitian, sylvester
+       isposdef, isposdef!, ishermitian, sylvester, rank, cond
 export braid, braid!, permute, permute!, transpose, transpose!, twist, twist!, repartition,
        repartition!
 export catdomain, catcodomain
@@ -119,7 +120,7 @@ using LinearAlgebra: norm, dot, normalize, normalize!, tr,
                      adjoint, adjoint!, transpose, transpose!,
                      lu, pinv, sylvester,
                      eigen, eigen!, svd, svd!,
-                     isposdef, isposdef!, ishermitian,
+                     isposdef, isposdef!, ishermitian, rank, cond,
                      Diagonal, Hermitian
 
 using SparseArrays: SparseMatrixCSC, sparse, nzrange, rowvals, nonzeros
