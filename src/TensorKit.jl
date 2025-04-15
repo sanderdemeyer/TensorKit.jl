@@ -131,6 +131,9 @@ using Random: Random, rand!, randn!
 
 using PackageExtensionCompat
 
+using GenericLinearAlgebra: svd as generic_svd
+using GenericLinearAlgebra: eigen as generic_eigen
+
 # Auxiliary files
 #-----------------
 include("auxiliary/auxiliary.jl")
