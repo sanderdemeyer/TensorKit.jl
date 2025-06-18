@@ -69,6 +69,7 @@ using ..TensorKit: OrthogonalFactorizationAlgorithm,
 using GenericLinearAlgebra: svd as generic_svd
 using GenericLinearAlgebra: eigen as generic_eigen
 using GenericLinearAlgebra: qr as generic_qr
+using GenericLinearAlgebra: nullspace, eigvals!
 
 # only defined in >v1.7
 @static if VERSION < v"1.7-"
