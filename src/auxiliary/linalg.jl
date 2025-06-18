@@ -380,7 +380,16 @@ end
 
 function eig!(A::StridedMatrix{T}; permute::Bool=true,
               scale::Bool=true) where {T<:Complex{BigFloat}}
-    eigval, eigvec = generic_eigen(A; sortby = λ -> -abs(λ))
+    if ishermitian(A)
+        eigval, eigvec = generic_eigen(A; sortby = λ -> -abs(λ))
+    else
+        N = size(A)[1]
+        eigval = GenericLinearAlgebra.eigvals!(A)
+        eigvec = zeros(Complex{BigFloat}, N, N)
+        for (i,λ) in enumerate(eigval)
+            eigvec[:,i] = GenericLinearAlgebra.nullspace(A - λ*I)
+        end
+end    
     return eigval, eigvec
 end
 
