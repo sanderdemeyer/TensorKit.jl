@@ -385,7 +385,7 @@ function eig!(A::StridedMatrix{T}; permute::Bool=true,
         eigval, eigvec = generic_eigen(A; sortby = λ -> -abs(λ))
     else
         N = size(A)[1]
-        eigval = eigvals!(A)
+        eigval = eigvals!(A; sortby = λ -> -abs(λ))
         eigvec = zeros(Complex{BigFloat}, N, N)
         for (i,λ) in enumerate(eigval)
             eigvec[:,i] = nullspace(A - λ*I)
