@@ -69,7 +69,8 @@ using ..TensorKit: OrthogonalFactorizationAlgorithm,
 using GenericLinearAlgebra: svd as generic_svd
 using GenericLinearAlgebra: eigen as generic_eigen
 using GenericLinearAlgebra: qr as generic_qr
-using GenericLinearAlgebra: nullspace, eigvals!
+using GenericLinearAlgebra: eigvals! as generic_eigvals!
+using GenericLinearAlgebra: nullspace as generic_nullspace
 
 # only defined in >v1.7
 @static if VERSION < v"1.7-"
@@ -385,10 +386,10 @@ function eig!(A::StridedMatrix{T}; permute::Bool=true,
         eigval, eigvec = generic_eigen(A; sortby = λ -> -abs(λ))
     else
         N = size(A)[1]
-        eigval = eigvals!(A; sortby = λ -> -abs(λ))
+        eigval = generic_eigvals!(A; sortby = λ -> -abs(λ))
         eigvec = zeros(Complex{BigFloat}, N, N)
         for (i,λ) in enumerate(eigval)
-            eigvec[:,i] = nullspace(A - λ*I)
+            eigvec[:,i] = generic_nullspace(A - λ*I)
         end
 end    
     return eigval, eigvec

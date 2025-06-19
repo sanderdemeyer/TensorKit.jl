@@ -133,6 +133,8 @@ using PackageExtensionCompat
 
 using GenericLinearAlgebra: svd as generic_svd
 using GenericLinearAlgebra: eigen as generic_eigen
+using GenericLinearAlgebra: eigvals! as generic_eigvals!
+using GenericLinearAlgebra: nullspace as generic_nullspace
 
 # Auxiliary files
 #-----------------

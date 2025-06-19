@@ -431,10 +431,10 @@ function exp!(t::TensorMap{T}) where {T<:Union{BigFloat,Complex{BigFloat}}}
             vals, vecs = generic_eigen(b)
         else
             N = size(b)[1]
-            vals = GenericLinearAlgebra.eigvals!(b)
+            vals = generic_eigvals!(b)
             vecs = zeros(Complex{BigFloat}, N, N)
             for (i,λ) in enumerate(eigvals)
-                vecs[:,i] = GenericLinearAlgebra.nullspace(A - λ*I)
+                vecs[:,i] = generic_nullspace(A - λ*I)
             end
         end
         copy!(b, vecs * LinearAlgebra.diagm(exp.(vals)) * vecs')
