@@ -434,7 +434,8 @@ function exp!(t::TensorMap{T}) where {T<:Union{BigFloat,Complex{BigFloat}}}
             vals = generic_eigvals!(b; sortby = λ -> -abs(λ))
             vecs = zeros(Complex{BigFloat}, N, N)
             for (i,λ) in enumerate(vals)
-                vecs[:,i] = generic_nullspace(b - λ*LinearAlgebra.I)
+                indices = findall(x -> x == λ, vals)
+                vecs[:,indices] = generic_nullspace(b - λ*LinearAlgebra.I)
             end
         end
         copy!(b, vecs * LinearAlgebra.diagm(exp.(vals)) * vecs')

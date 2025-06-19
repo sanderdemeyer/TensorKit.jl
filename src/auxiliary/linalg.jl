@@ -389,7 +389,8 @@ function eig!(A::StridedMatrix{T}; permute::Bool=true,
         eigval = generic_eigvals!(A; sortby = λ -> -abs(λ))
         eigvec = zeros(Complex{BigFloat}, N, N)
         for (i,λ) in enumerate(eigval)
-            eigvec[:,i] = generic_nullspace(A - λ*LinearAlgebra.I)
+            indices = findall(x -> x == λ, eigval)
+            eigvec[:,indices] = generic_nullspace(A - λ*LinearAlgebra.I)
         end
 end    
     return eigval, eigvec
