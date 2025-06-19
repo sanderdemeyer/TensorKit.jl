@@ -431,9 +431,9 @@ function exp!(t::TensorMap{T}) where {T<:Union{BigFloat,Complex{BigFloat}}}
             vals, vecs = generic_eigen(b)
         else
             N = size(b)[1]
-            vals = generic_eigvals!(b)
+            vals = generic_eigvals!(b; sortby = λ -> -abs(λ))
             vecs = zeros(Complex{BigFloat}, N, N)
-            for (i,λ) in enumerate(eigvals)
+            for (i,λ) in enumerate(vals)
                 vecs[:,i] = generic_nullspace(A - λ*I)
             end
         end
