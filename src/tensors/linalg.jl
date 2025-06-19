@@ -427,16 +427,7 @@ function exp!(t::TensorMap{T}) where {T<:Union{BigFloat,Complex{BigFloat}}}
     domain(t) == codomain(t) ||
         error("Exponential of a tensor only exist when domain == codomain.")
     for (c, b) in blocks(t)
-        if ishermitian(b)
-            vals, vecs = generic_eigen(b)
-        else
-            N = size(b)[1]
-            vals = GenericLinearAlgebra.eigvals!(b)
-            vecs = zeros(Complex{BigFloat}, N, N)
-            for (i,λ) in enumerate(eigvals)
-                vecs[:,i] = GenericLinearAlgebra.nullspace(A - λ*I)
-            end
-        end
+        vals, vecs = generic_eigen(b)
         copy!(b, vecs * LinearAlgebra.diagm(exp.(vals)) * vecs')
     end
     return t
