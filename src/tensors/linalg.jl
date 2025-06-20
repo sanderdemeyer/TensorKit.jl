@@ -431,7 +431,11 @@ function exp!(t::TensorMap{T}) where {T<:Union{BigFloat,Complex{BigFloat}}}
             vals, vecs = generic_eigen(b)
         elseif ishermitian(-b * im)
             vals, vecs = generic_eigen(-b * im)
-            vals = convert(Array{Complex{scalartype(vals)}}, vals)
+            if isreal(vals)
+                vals = convert(Array{Complex{scalartype(vals)}}, vals)
+            else
+                vals = convert(Array{scalartype(vals)}, vals)
+            end
             vals .*= im
         else
             N = size(b)[1]
