@@ -386,7 +386,7 @@ function eig!(A::StridedMatrix{T}; permute::Bool=true,
         eigval, eigvec = generic_eigen(A; sortby = λ -> -abs(λ))
     elseif ishermitian(-A * im)
         eigval, eigvec = generic_eigen(-A * im; sortby = λ -> -abs(λ))
-        if isreal(eigval)
+        if scalartype(eigval) <: Real
             eigval = convert(Array{Complex{scalartype(eigval)}}, eigval)
         else
             eigval = convert(Array{scalartype(eigval)}, eigval)
