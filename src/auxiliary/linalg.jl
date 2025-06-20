@@ -384,7 +384,7 @@ function eig!(A::StridedMatrix{T}; permute::Bool=true,
               scale::Bool=true) where {T<:Complex{BigFloat}}
     if ishermitian(A)
         eigval, eigvec = generic_eigen(A; sortby = λ -> -abs(λ))
-    elseif ishermitian(A*im)
+    elseif ishermitian(-A * im)
         eigval, eigvec = generic_eigen(-A * im; sortby = λ -> -abs(λ))
         eigval = convert(Array{Complex{scalartype(eigval)}}, eigval)
         eigval .*= im

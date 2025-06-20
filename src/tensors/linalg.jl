@@ -429,7 +429,7 @@ function exp!(t::TensorMap{T}) where {T<:Union{BigFloat,Complex{BigFloat}}}
     for (c, b) in blocks(t)
         if ishermitian(b)
             vals, vecs = generic_eigen(b)
-        elseif ishermitian(b*im)
+        elseif ishermitian(-b * im)
             vals, vecs = generic_eigen(-b * im)
             vals = convert(Array{Complex{scalartype(vals)}}, vals)
             vals .*= im
